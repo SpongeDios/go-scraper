@@ -24,13 +24,12 @@ for /f "tokens=1* delims=]" %%a in ('type "%INPUT_FILE%" ^| find /v /n ""') do (
     set /a counter+=1
 )
 
-REM Procesar cada chunk secuencialmente
+REM Procesar cada chunk secuencialmente (manejo de errores sin salir)
 for %%f in ("%TEMP_DIR%\chunk_*.txt") do (
     echo Procesando %%f...
     %EXE% -c 4 -depth 200 -input "%%f" -results "%OUTPUT_FILE" -exit-on-inactivity 3m
     if errorlevel 1 (
-        echo Error detectado en el chunk %%f
-        exit /b 1
+        echo Advertencia: El chunk %%f tuvo un error, continuando con el siguiente...
     )
 )
 
